@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Reservation Ticket Booking</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+        <style>
+body{
+font-family:Arial;
+text-align:center;
+padding-top:80px;
+transition:0.5s;
+}
+
+.container{
+width:360px;
+margin:auto;
+padding:25px;
+background:white;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.3);
+}
+
+#timer{
+font-size:22px;
+font-weight:bold;
+color:green;
+}
+
+input,select{
+width:90%;
+padding:10px;
+margin:8px;
+}
+
+button{
+padding:10px;
+width:95%;
+cursor:pointer;
+}
+
+button:disabled{
+background:gray;
+}
+
+#status{
+color:red;
+font-size:18px;
+margin-top:10px;
+}
+
+#message{
+margin-top:10px;
+font-weight:bold;
+}
+
+        </style>
+<div class="container">
+
+<h2>Reservation Ticket Booking</h2>
+
+<p>Time Remaining</p>
+<div id="timer">60</div>
+
+<form id="bookingForm">
+
+<input type="text" id="name" placeholder="Enter your name" required>
+        <input type="number" id="name" placeholder="Enter your phone number" required>
+        <input type="text" id="name" placeholder="Enter your residential address" required>
+        <input type="date" id="name" placeholder="Enter your DOB" required>
+        <input type="email" id="email" placeholder="Enter your email" required>
+<select id="tickets">
+<option value="1">1 Ticket</option>
+<option value="2">2 Tickets</option>
+<option value="3">3 Tickets</option>
+<option value="4">4 Tickets</option>
+<option value="5">5 Tickets</option>
+<option value="4">6 Tickets</option>
+<option value="5">7 Tickets</option>
+<option value="4">8 Tickets</option>
+<option value="5">9 Tickets</option>
+<option value="4">10 Tickets</option>
+
+</select>
+
+<button type="submit" id="bookBtn">Book Ticket</button>
+
+</form>
+
+<div id="status"></div>
+<div id="message"></div>
+
+</div>
+
+<script>
+
+// Random background color each time page loads
+function randomColor(){
+const colors=[
+        "#FF0000", "#FFA500", "#FFFF00","#008000","#0000FF","#4B0082",
+"#EE82EE"];
+return colors[Math.floor(Math.random()*colors.length)];
+}
+
+document.body.style.backgroundColor=randomColor();
+
+let timeLeft=60;
+
+const timer=document.getElementById("timer");
+const bookBtn=document.getElementById("bookBtn");
+const status=document.getElementById("status");
+const message=document.getElementById("message");
+
+// Countdown timer
+const countdown=setInterval(function(){
+
+timeLeft--;
+
+timer.textContent=timeLeft;
+
+if(timeLeft<=0){
+
+clearInterval(countdown);
+
+bookBtn.disabled=true;
+
+status.textContent="Booking Closed";
+
+document.body.style.backgroundColor="red";
+
+timer.textContent="0";
+
+}
+
+},1000);
+
+
+// Form submission
+document.getElementById("bookingForm").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+if(timeLeft<=0){
+
+message.textContent="Booking time expired";
+
+message.style.color="red";
+
+return;
+
+}
+
+const name=document.getElementById("name").value;
+const email=document.getElementById("email").value;
+const tickets=document.getElementById("tickets").value;
+
+// DATABASE using localStorage
+let bookings=JSON.parse(localStorage.getItem("bookings"))||[];
+
+bookings.push({
+name:name,
+email:email,
+tickets:tickets,
+time:new Date().toLocaleString()
+});
+
+localStorage.setItem("bookings",JSON.stringify(bookings));
+
+// Confirmation message
+message.textContent="✅ Ticket booked successfully for "+name;
+message.style.color="green";
+
+clearInterval(countdown);
+
+// Show confirmation for 10 seconds then reload
+setTimeout(function(){
+
+location.reload();
+
+},10000);
+
+});
+
+</script>
+
+</body>
+</html>
